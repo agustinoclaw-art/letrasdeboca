@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La 12 - Buscador de letras (Boca Juniors)</title>
+<style>
+  :root {
+    --blue: #0033A0;
+    --blue-dark: #001f6b;
+    --gold: #FDB913;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #5a6275;
+    --border: #d9deea;
+    --highlight: #fff3b0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: #fff;
+    padding: 2rem 1.25rem 2.5rem;
+    text-align: center;
+    border-bottom: 6px solid var(--gold);
+  }
+  header h1 { margin: 0 0 .25rem; font-size: 1.9rem; }
+  header p { margin: 0; opacity: .9; font-size: .95rem; }
+  main { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .search-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 6px 20px rgba(0,51,160,.08);
+    position: sticky;
+    top: .75rem;
+    z-index: 5;
+  }
+  .search-row { display: flex; gap: .6rem; align-items: center; }
+  #q {
+    flex: 1;
+    font-size: 1.05rem;
+    padding: .75rem .9rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  #q:focus { border-color: var(--blue); }
+  #clear {
+    padding: .75rem 1rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--blue);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  #clear:hover { background: var(--blue-dark); }
+  .stats { margin: .75rem 0 0; color: var(--muted); font-size: .9rem; }
+  .hint { color: var(--muted); text-align: center; padding: 2rem 1rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 1rem 0;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .85rem 1rem;
+    background: #f8faff;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .card-title { font-weight: 700; color: var(--blue); font-size: 1.05rem; }
+  .card-meta { color: var(--muted); font-size: .8rem; }
+  .badge {
+    background: var(--gold);
+    color: #1a1a2e;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: .2rem .55rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .lyrics {
+    padding: 1rem;
+    white-space: pre-wrap;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: .92rem;
+    line-height: 1.55;
+  }
+  .lyrics .line { display: block; padding: 0 .25rem; border-radius: 4px; }
+  .lyrics .line.match { background: var(--highlight); }
+  .snippet { padding: .6rem 1rem; color: var(--muted); font-size: .85rem; border-top: 1px dashed var(--border); }
+  details summary { list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  .empty { text-align: center; color: var(--muted); padding: 2rem; }
+  footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 1rem; }
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5rem; }
+    .search-row { flex-direction: column; }
+    #clear { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>La 12 - Buscador de letras</h1>
+  <p>Canciones de la hinchada de Boca Juniors. Escribí un fragmento de la letra y encontrá la canción.</p>
+</header>
+<main>
+  <div class="search-box">
+    <div class="search-row">
+      <input id="q" type="search" placeholder="Ej: vamo a salir campeones..." autofocus autocomplete="off">
+      <button id="clear" type="button">Limpiar</button>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+  <div id="results"></div>
+</main>
+<footer>La 12 &mdash; letras de canciones de la hinchada de Boca Juniors</footer>
+
+<script id="song-data" type="application/json">[{"title": "A Boca Junior yo lo sigo a donde va", "lyrics": "Soy de Boca desde que estaba en la cuna \na Boca Junior yo lo sigo a donde va \neste año de la mano de La 12 \ntodos juntos a la vuelta vamo a dar", "file": "a-boca-junior-yo-lo-sigo-a-donde-va.txt"}, {"title": "A Boca lo llevo en la sangre", "lyrics": "Soy del barrio de La Boca\ny siempre te voy a seguir\nen las malas a todas partes\nlas buenas ya van a venir\nNo somos como la Academia\nno somos como el Ciclon\na Boca lo llevo en la sangre\nlo llevo en el corazon", "file": "a-boca-lo-llevo-en-la-sangre.txt"}, {"title": "A RiBer cuando lo Bailo lo bailo de Noche y Dia", "lyrics": "A RIber lo vuelo loco mamá\ncon la azul y la amarilla\na RIber lo vuelo loco mamá\ncon la azul y la amarilla\n\nLo bailo para acá, lo bailo para allá\na todos esos putos lo vamo' a matar\nlo bailo para acá, lo bailo para allá\na todos esos putos lo vamo' a matar", "file": "a-riber-cuando-lo-bailo-lo-bailo-de-noche-y-dia.txt"}, {"title": "Al gallinero ya se lo prendimos fuego", "lyrics": "al gallinero ya se lo prendimos fuego... \na San Lorenzo lo corrimos en Boedo \na Avellaneda lo defiende un policia... \nHay que putas que son las hinchadas unidas... \nquiero que sepan que el Xeneise es mi alegria... \naunque no entiendan que por Boca doy la vida... \ncuando me muera no quiero nada de flores...\nyo quiero un trapo que tenga esos colores...", "file": "al-gallinero-ya-se-lo-prendimos-fuego.txt"}, {"title": "Antes Que Se Vayas Al Descenso", "lyrics": "Antes que se vayas al descenso,\nVamos a quemar el gallinero\nMi vida no es igual,\nSi te vas a la b\nComo te voy a extrañar,\nGallina no volves más.", "file": "antes-que-se-vayas-al-descenso.txt"}, {"title": "Aprenderás a llorar (los palmeras)", "lyrics": "Hoy tenemos que ganar la 12 vino re loca,\n En todas partes vamo’ a estar, esta es la barra de Boca;\n \n Porque te llevo en el corazón, no me importa más nada,\n Donde estes va a alentar, siempre va con vos esta descontrolada tu hinchada;\n Deja tu opiniónLa vuelta vamos a dar, la 12 va a festejar quiero verte salir primero,\n No la traten de igualar, es la más loca que hay, la más grande del mundo entero\n \n River no chamuyes mas, ya nos vamos a encontrar, vamo’ a matarles el tercero,\n Nunca nos vamo’ a olvidar que te fuiste al nacional y quemaste el gallinero", "file": "aprenderas-a-llorar-los-palmeras.txt"}, {"title": "Baila la hinchada baila", "lyrics": "Baila la hinchada baila,\nbaila de corazon,\nsuben y bajan suben y bajan\nparecen ascensor", "file": "baila-la-hinchada-baila.txt"}, {"title": "Boca de mi vida", "lyrics": "Boca, Boca de mi vida, \nvos sos la alegría, \nde mi corazón, \nsabes todo lo que siento, \nte llevo aca adentro, \nde mi corazón", "file": "boca-de-mi-vida.txt"}, {"title": "Boca es la pasión.", "lyrics": "Boca es la pasión,\n Se lleva en la sangre y en el corazón.\n Siempre vamos a estar,\n En las buenas y en las malas te voy a alentar, te querés matar,\n Che gallina vigilante saluda a papá.\n Siempre fuiste igual,\n En Mendoza y Mar de plata fuiste para atrás.\n Yo soy así, Bostero hasta el final,\n de visitante y de local, me vas a encontrar.", "file": "boca-es-la-pasion.txt"}, {"title": "Boca juniors, hoy te vinimo a ver", "lyrics": "Boca juniors, hoy te vinimo a ver\nPonga huevo, hoy no podes perder\nTe llevamos, dentro del corazón\nY la 12 quiere que salgas campeón...", "file": "boca-juniors-hoy-te-vinimo-a-ver.txt"}, {"title": "Boca Juniors sos el beso de mamá", "lyrics": "Esta barra nunca te va a abandonar\nEn el mundo no va a haber ninguna igual\nNi la muerte nos va a poder separar\nBoca Juniors sos el beso de mamá oh oh oh\nSiempre te voy a alentar\n*Nunca te voy a dejar\nLa que corre a Independiente y al Ciclón\nLa que corre a los putos del Tablón\nLa más grande, la que nunca descendió\nLa que tiene a Diego Armando Maradó oh oh oh\nDale dale dale Bo, que vamos a salir campeón", "file": "boca-juniors-sos-el-beso-de-mama.txt"}, {"title": "Boca locura", "lyrics": "Boca locura\nque tenemos aguante no hay duda\nBoca te quiero\nantes de ser gallina yo me muero\nVamos vamos Xeneize te vinimos a ver,\nla 12 esta reloca no podemos perder", "file": "boca-locura.txt"}, {"title": "Boca Mi Bueno Amigo", "lyrics": "Boca, mi buen amigo \nesta campaña volveremos a estar contigo, \nte alentaremos de corazón, \nesta es tu hinchada que te quiere ver campeón, \nno me importa lo que digan, \nlo que digan los demás, \nyo te sigo a todas partes \ncada vez te quiero más", "file": "boca-mi-bueno-amigo.txt"}, {"title": "Boca Mi Vida Es Alegria", "lyrics": "Boca mi vida es alegria\nSos los mas grandes de la argentina\nCorre al racing\nY a las gallinas\nCorre los cuervos\nY a la policia\nDale boo dale bo\nDale booo dale boooooo", "file": "boca-mi-vida-es-alegria.txt"}, {"title": "Boca no tiene marido", "lyrics": "Boca no tiene marido\n Boca no tiene mujer\n Pero tiene un hijo bobo\n Que se llama Riber Plate.", "file": "boca-no-tiene-marido.txt"}, {"title": "Boca ya salió campeón!", "lyrics": "Boca ya salió campeón...\n Boca ya salió campeón \n se lo dedicamos a todos \n la re puta madre que los re pario....", "file": "boca-ya-salio-campeon.txt"}, {"title": "Bostero soy, y boca es la alegria de mi corazon", "lyrics": "Bostero soy,\ny boca es la alegria de mi corazon\n Sos mi vida vos sos la pasión,\nmas allá de toda explicación\n Y a mi no me interesa en que cancha jugues,\nlocal o visitante yo te vengo a ver\n Ni la muerte nos va a separar,\ndesde el cielo te voy a alentar", "file": "bostero-soy-y-boca-es-la-alegria-de-mi-corazon.txt"}, {"title": "Cantitos para Racing", "lyrics": "Hicieron correr la bola\nQue nos iban a matar\nHoy vinimo a Avellaneda\nNo los pudimo encontrar\n\nRacing compadre la concha de tu madre\n\nOh Racing sos cagón\n\nNunca hicimos amistades... \nNunca las vamos a hacer... \nAmistades hacen los putos... \nQue no paran de correr\n\nHINCHADA HAY UNA SOLA", "file": "cantitos-para-racing.txt"}, {"title": "Che gallina vigilante saluda a papá", "lyrics": "Boca es la pasión\nSe lleva en la sangre y en el corazón\nSiempre voy a estar\nEn las buenas y en las malas te voy a alentar\nTe queres matar\nChe gallina vigilante saluda a papá\nSiempre fuiste igual\nEn Mendoza y Mar del Plata fuiste para atras\nYo soy asi, bostero hasta el final\nDe visitante y de local\nMe vas a encontrar", "file": "che-gallina-vigilante-saluda-a-papa.txt"}, {"title": "Como me voy a olvidar", "lyrics": "Como me voy a olvidar \nGallina puta lo que te espera \ncomo me voy a olvidar \nvas a morir en la Bombonera \nes mi ilusión, volver a verte \npara volver a correrte \nuna vez más vas a cobrar \ny no te salva ni toda federal", "file": "como-me-voy-a-olvidar.txt"}, {"title": "Como no voy a ser", "lyrics": "Como no voy a ser\nComo no voy a ser\nHincha de Boca vago y atorrante\nComo no voy a ser \nComo no voy a ser\nSoy de Boca y tengo aguante!", "file": "como-no-voy-a-ser.txt"}, {"title": "Como te va riBer, como te va", "lyrics": "Como te va riBer, como te va\ngallina puta te saluda tu papa\naguante no tenes, siempre corres\ny las finales las miras por la TV", "file": "como-te-va-riber-como-te-va.txt"}, {"title": "Con boca nunca te plantaste", "lyrics": "gallina vos sos vigilante\n con boca nunca te plantaste \n ahora cuando no encontremos vamos a ver que hinchada tiene más aguante\n \n nadie viene a la boca \n tienen miedo de encontrarse\n vamos vamos jugadores que con esta hinchada hay que ir para adelante", "file": "con-boca-nunca-te-plantaste.txt"}, {"title": "Cuando me muera no quiero nada de flores", "lyrics": "Al gallinero ya se lo prendimos fuego\n A San Lorenzo lo corrimos en Boedo\n A Avellaneda lo defiendo un policía\n Hay que puta que son las hinchadas unidas\n Quiero que sepan que el Xeneize es mi alegría\n Aunque no entiendan yo por Boca doy la vida\n Cuando me muera no quiero nada de flores\n Yo quiero un trapo que tenga estos colores\n Y dale dale dale dale dale Bo\n Y dale dale dale dale dale Bo\n Y dale dale dale dale dale Bo\n Y dale dale dale dale dale Bo", "file": "cuando-me-muera-no-quiero-nada-de-flores.txt"}, {"title": "Cuando vas a la cancha", "lyrics": "Cuando vas a la cancha, vas con el patrullero\nVos no tenés aguante, gallina vigilante\nSiempre hiciste amistades con el rojo\nY el tercero te vamo' a matar\nY La Doce que siempre está\nDonde jugués te va a alentar\nY dale Bo, vamo' a ganar\nQue la vuelta queremos dar", "file": "cuando-vas-a-la-cancha.txt"}, {"title": "Dale Boca dale Bo", "lyrics": "Dale Boca dale Bo\ndale Bo\ndale Bo\ndale Boca dale Bo", "file": "dale-boca-dale-bo.txt"}, {"title": "Dale boca que no ha pasado nada", "lyrics": "Dale Bo dale Bo dale Bo\ndale Boca que no ha pasado nada\ncon los huevos del equipo\ny los huevos de la hinchada\ndale Boca que vamos a ganar", "file": "dale-boca-que-no-ha-pasado-nada.txt"}, {"title": "Dale dale Boca", "lyrics": "Dale dale dale dale dale dale dale Boca\n Y dale dale dale dale dale dale dale Bo-\n Dale dale dale dale dale dale dale Boca\n Y dale dale dale dale dale dale dale Bo-\n Dale dale dale dale dale dale dale Boca\n Y dale dale dale dale dale dale dale Bo-\n Dale dale dale dale dale dale", "file": "dale-dale-boca.txt"}, {"title": "De la tribuna del gallinero vamo a salir", "lyrics": "de la tribuna del gallinero vamo a salir\n tirando tiros vamo a matar hasta el referí\n yo soy bostero me importa un huevo la federal \n fecha 14 vamo a quemar el monumental", "file": "de-la-tribuna-del-gallinero-vamo-a-salir.txt"}, {"title": "El trapo de Di Carlo", "lyrics": "Que alegria que alegria \nole ole ola \nvamos Boca todavia \nque estas para ganar \nCorriste en Mar del Plata \nde eso no te olvides \nel trapo de Di Carlo \nnunca lo vas a ver \nLa Boca es alegria \nLa Boca es carnaval \nvamos a correr a river \nen el monumental.", "file": "el-trapo-de-di-carlo.txt"}, {"title": "En La Boca va a haber un cementerio de gallinas", "lyrics": "Los vamos a matar,\nlos vamos a matar,\nno va a quedar ni una gallina viva\nEn La Boca va a haber\nEn La Boca va a haber\nun cementerio de gallinas.", "file": "en-la-boca-va-a-haber-un-cementerio-de-gallinas.txt"}, {"title": "Esta es La 12 si señores", "lyrics": "Esta es La 12 si señores,\nesta es la banda que va al frente\n La que corre a Independiente,\ny a los putos de Ciclón\n Y no me importa donde juegues,\nni toda la Federal\n Preparate Millonario,\nque te vamos a matar", "file": "esta-es-la-12-si-senores.txt"}, {"title": "Esta es la barra de Boca", "lyrics": "Porque te llevo en el corazón\nNo me importa más nada\nDonde estés, va a alentar\nsiempre va con vos\nEstá descontrolada\nTu hinchada\n\nLa vuelta vamos a dar\nLa 12 va a festejar\nQuiero verte salir primero\n\nNo la traten de igualar\nEs la más loca que hay\nLa más grande del mundo entero\n\nRiver, no chamuyes más\nYa nos vamos a encontrar\nVamos a matarles el tercero\n\nNunca nos vamos a olvidar\nQue te fuiste al nacional\nY quemaste el Gallinero", "file": "esta-es-la-barra-de-boca.txt"}, {"title": "Esta es la numero 12, que te sigue a todas partes", "lyrics": "Esta es la numero 12, que te sigue a todas partes,\n la que corre a san lorenzo, la academia, riber pleei, \nesta hinchada siempre alienta, aunque ganes aunque pierdas, \nBoca es un sentimiento que no se puede explicar, \nvamos Boca Juniors que tenes que ganar, \ny de la cabeza la vuelta vamo a dar, \ny descontrolados vamo a festejar, \nVAMOS A FESTEJAAAR! â™« â™« \nBOOOCA BOCA BOCA BOOOCAAAAAAAA!", "file": "esta-es-la-numero-12-que-te-sigue-a-todas-partes.txt"}, {"title": "Esta es la numero 12", "lyrics": "Esta es la numero 12, que te sigue a todas partes,\n la que corre a san lorenzo, la academia, riber pleei,\n esta hinchada siempre alienta, aunque ganes aunque pierdas,\n Boca es un sentimiento que no se puede explicar,\n vamos Boca Juniors que tenes que ganar,\n y de la cabeza la vuelta vamo a dar,\n y descontrolados vamo a festejar,\n VAMOS A FESTEJAAAR! â™« â™«\n BOOOCA BOCA BOCA BOOOCAAAAAAAA!", "file": "esta-es-la-numero-12.txt"}, {"title": "Esta hinchada esta re loca", "lyrics": "Muchas cosas nos separan...\nche gallina hija de puta\nsiempre hiciste amistades...\ny tu aguante...\nes la yuta !\n\nY river plei\nno para de correr\nsiempre me chamuya\ny nunca te planta\nyo te prometo que...\nnos vamos a encontrar\ny te vamo a matar... !", "file": "esta-hinchada-esta-re-loca.txt"}, {"title": "Esta hinchada loca quiere un campeonato para festejar", "lyrics": "Dale dale Bo\nque tenemos que ganar\ndale dale Bo\nque la vuelta vamo' a dar\nesta hinchada loca quiere un campeonato para festejar", "file": "esta-hinchada-loca-quiere-un-campeonato-para-festejar.txt"}, {"title": "Esta hinchada siempre alienta", "lyrics": "Esta es la número 12\nQué te sigue a todas partes\nLa que corre a San Lorenzo, la academia y riber plate\nEsta hinchada siempre alienta\nAunque ganes, aunque pierdas\nBoca es un sentimiento que no se puede explicar\nVamos Boca Juniors que tenés que ganar\nY de la cabeza la vuelta vamos a dar\nY descontrolado vamo a festejar\nVamos a festejar...", "file": "esta-hinchada-siempre-alienta.txt"}, {"title": "Este año volvemos a Japon", "lyrics": "En el barrio de la ribera \nLo sigo a Boca a donde sea \nDe la cuna hasta el cajón \nNadie entiende este sentimiento que siento por vos \nDonde juegues yo voy a estar \nPor eso aliento \nHoy tenes, que ganar \nOtra copa quiero festejar \nPonga huevo, campeón \nQue este año volvemo' a Japón", "file": "este-ano-volvemos-a-japon.txt"}, {"title": "Gallina esa mancha no se borra más", "lyrics": "Gallina, esa mancha no se borra más \nvos te fuiste al descenso \nquemando el monumental \ngallina, siempre te vamo' a recordar \nen La Boca, abandonaste.. \nlo ganaste en Paraguay \nBoca vos sos mi pasión \nla alegría que me das \nno se compara con nada \ncada vez te quiero más \nél que nunca descendió \nél que más copa lo ganó \nel que llena en todos lados \nde la Boca hasta Japón \nNo chamuyes Riber Plate ¿En Octavos qué paso? \nte falto el segundo tiempo porque vos sos un cagón", "file": "gallina-esa-mancha-no-se-borra-mas.txt"}, {"title": "Gallina Esperanos Un Poquito Más", "lyrics": "Gallina esperanos un poquito más\n Ya nos vamos a encontrar\n Gallina esperanos un poquito más\n Ya nos vamos a encontrar\n \n Los de River tienen miedo\n Porque saben que esta banda tiene huevo\n En La Boca ya corrieron\n Y el domingo los vamos a correr de nuevo", "file": "gallina-esperanos-un-poquito-mas.txt"}, {"title": "Gallina puta te saluda tu papá", "lyrics": "Cómo te va Riveeer, cómo te va?\nGallina puta te saluda tu papá\nAguante no tenéeees, siempre corrés\ny las finales las mirás por la TV", "file": "gallina-puta-te-saluda-tu-papa.txt"}, {"title": "Gallina vos sos vigilante con boca nunca te plantaste", "lyrics": "Gallina vos sos vigilante con boca nunca te plantaste \nahora cuando no encontremos vamos a ver que hinchada tiene más aguante \nnadie viene a la boca tienen miedo de encontrarse \nVamos vamos jugadores que con esta hinchada hay que ir pa adelante\ndale dale boooo dale dale boooo dale dale booo", "file": "gallina-vos-sos-vigilante-con-boca-nunca-te-plantaste.txt"}, {"title": "Hincha de Boca vago y atorrante", "lyrics": "Como no voy a ser\n Como no voy a ser\n Hincha de Boca vago y atorrante\n Como no voy a ser\n Como no voy a ser\n Soy de Boca y tengo aguante\n Como no vas a ser\n Como no vas a ser\n Hincha de River puto y vigilante\n Como no vas a ser\n Como no vas a ser\n Si vos corres en todas partes", "file": "hincha-de-boca-vago-y-atorrante.txt"}, {"title": "Hoy tenemos que ganar la 12 vino re loca", "lyrics": "Hoy tenemos que ganar la 12 vino re loca,\nEn todas partes vamo’ a estar, esta es la barra de Boca;\nPorque te llevo en el corazón, no me importa más nada,\nDonde estés va a alentar, siempre va con vos, está descontrolada tu hinchada;\nLa vuelta vamos a dar, la 12 va a festejar, quiero verte salir primero,\nNo la traten de igualar, es la más loca que hay, la más grande del mundo entero;\nRiver no chamuyes más, ya nos vamos a encontrar, vamo’ a m…. el tercero,\nNunca nos vamo’ a olvidar que te fuiste al nacional y quemaste el gallinero.", "file": "hoy-tenemos-que-ganar-la-12-vino-re-loca.txt"}, {"title": "La azul y oro es mi pasión", "lyrics": "De chico te vengo a ver, y de vos me enamoré\nLa azul y oro es mi pasión, lo llevo en el corazón\nVamos los bosteros, vamos a ganar\nEs un sentimiento no puedo parar\nDale bo dale dale bo, dale bo dale dale bo, campeón\nLa vuelta vamos a dar, La 12 va festejar", "file": "la-azul-y-oro-es-mi-pasion.txt"}, {"title": "La Copa Libertadores es mi obsesión", "lyrics": "Y dale alegria alegria a mi corazon \nlo unico que te pido ganemos hoy \nla Copa Libertadores es mi obsesion \ntenes que dejar el alma y el corazon \nYa vas a ver,\nno somos como los putos de river plate", "file": "la-copa-libertadores-es-mi-obsesion.txt"}, {"title": "La más grande, la que nunca descendió", "lyrics": "La más grande, la que nunca descendió \nLa que quiere a Diego Armando maradooo\nDale dale dale booo\nQue vamos a salir campeón \nEstá barra nunca te va a abandonar \nEn el mundo no va a haber ninguna igual \nNi la muerte nos va a poder separar \nBoca juniors sos el beso de mamá \nSiempre te voy a alentar, nunca te voy a dejar \nLa que corre a independiente y al ciclón \nLa que corre a los put*s del tablón", "file": "la-mas-grande-la-que-nunca-descendio.txt"}, {"title": "Las gallinas son así", "lyrics": "Las gallinas son así,\nson las amargas de la Argentina\n Cuando no salen campeón,\nesas tribunas están vacías\n Yo soy de Boca señor,\ncantemos todos con alegría\n Aunque no salgas campeón,\nel sentimiento no se termina\n Y dale Bo,\ny dale dale Boca,\ny dale Bo,\ny dale dale Bo\n Y dale Bo,\ny dale dale Boca,\ny dale Booooooooo\n Y dale dale Bo", "file": "las-gallinas-son-asi.txt"}, {"title": "Llora riber porque descendió", "lyrics": "Yo sigo al Xeneize por amor\nBoca Juniors me robaste el corazón\nMucha gente nunca va a entender \na Boca se lo lleva adentro de la piel\nSos mi vida sos mi enfermedad\nsos la droga que yo no puedo dejar\nPorque nunca te abandonare\nCuando me muera desde el cielo yo te alentaré, yo te alentaré\nLlora Riber porque descendió,\nsufre porque es cagón!\nMe pregunto qué sintió jugar,\njugar todo el año en el Nacional, en el Nacional", "file": "llora-riber-porque-descendio.txt"}, {"title": "Llora river, el ciclon y la academia", "lyrics": "Vamos los bosteros, vamos vamos los bosteros \nvamos los bosteros yo te sigo yo te quiero, \nsoy de Boca porque tenemos aguante \ny no hay ninguna hinchada, que a La 12 se le plante \nllora river, el ciclon y la academia \nporque saben que este año los bosteros dan la vuelta", "file": "llora-river-el-ciclon-y-la-academia.txt"}, {"title": "Los domingos en la cancha", "lyrics": "Los domingos en la cancha\nesta hinchada esta re loca\nno me importa donde vayas\nsolo quiero...\nver a Boca !\nMuchas cosas nos separan...\nche gallina hija de puta\nsiempre hiciste amistades...\ny tu aguante...\nes la yuta !\nY river plei\nno para de correr\nsiempre me chamuya\ny nunca te planta\nyo te prometo que...\nnos vamos a encontrar\ny te vamo a matar... !", "file": "los-domingos-en-la-cancha.txt"}, {"title": "Movete xeneize movete", "lyrics": "Movete xeneize movete, \nmovete deja de joder. \nEsta hinchada esta loca, \nhoy no podemos perder!", "file": "movete-xeneize-movete.txt"}, {"title": "Muchas cosas nos separan", "lyrics": "Los domingos en la cancha \nesta hinchada esta re loca \nno me importa donde vayas \nsolo quiero... ver a Boca ! \nMuchas cosas nos separan... \nche gallina hija de puta \nsiempre hiciste amistades... \ny tu aguante... es la yuta ! \nY river plei \nno para de correr \nsiempre me chamuya \ny nunca te planta \nyo te prometo que... \nnos vamos a encontrar \ny te vamo a matar... !", "file": "muchas-cosas-nos-separan.txt"}, {"title": "Muchas veces fui preso y muchas veces llore por vos", "lyrics": "Muchas veces fui preso \ny muchas veces llore por vos \nyo a boca lo quiero \ny lo llevo a adentro del corazon.", "file": "muchas-veces-fui-preso-y-muchas-veces-llore-por-vos.txt"}, {"title": "Nadie quiere venir en la Bombonera", "lyrics": "Vamos Boca Juniors, sabés que yo te quiero\nSiempre voy con vos es un sentimiento \nAca esta la 12 la que siempre te acompaña\nLa que esta en las buenas y en las malas\nQue paso con el fantasma del decenso\nQue paso con las Gallinas y San Lorenzo\nNadie quiere venir en la Bombonera \nPreguntale a los putos de Avellaneda", "file": "nadie-quiere-venir-en-la-bombonera.txt"}, {"title": "Ni la muerte nos va a separar", "lyrics": "Bostero soy y Boca es la alegría de mi corazon \nsos mi vida sos mi pasion \nmas allá de todas explicacion \nA mi no me interesa en que cancha juegues \nlocal o visitante yo te vengo a ver \nni la muerte nos va a separar\ndesde el cielo te voy alentar", "file": "ni-la-muerte-nos-va-a-separar.txt"}, {"title": "No la traten de igualar es la más loca que hay", "lyrics": "Porque te llevo en el corazón\nNo me importa más nada \nDonde estés va a alentar siempre va con vos esta descontrolada \ntu hinchada\n\nLa vuelta vamos a dar la 12 va a festejar \nQuiero verte salir primero\n\nNo la traten de igualar es la más loca que hay\n\nLa más grande del mundo entero\n\nRiBer no chamuyes más ya nos vamos a encontrar Vamo a Mtrls el tercero\nNunca nos vamos a olvidar que te fuiste al nacional\n\ny quemáste el gallinero", "file": "no-la-traten-de-igualar-es-la-mas-loca-que-hay.txt"}, {"title": "No va a quedar ni una gallina viva", "lyrics": "Los vamos a matar\nLos vamos a matar\nNo va a quedar ni una gallina viva\nEn la boca va a haber\nEn la boca va a haber\nUn cementerio de gallinas", "file": "no-va-a-quedar-ni-una-gallina-viva.txt"}, {"title": "Nosotros alentamos pongan huevos que ganamos", "lyrics": "Nosotros alentamos\nOhhh\nNosotros alentamos\nOhhh\npongan huevos\nque ganamos\nOhhh", "file": "nosotros-alentamos-pongan-huevos-que-ganamos.txt"}, {"title": "Nunca hicimos amistades", "lyrics": "Nunca hicimos amistades... \nNunca las vamos a hacer... \nAmistades hacen los putos... \nQue no paran de correr", "file": "nunca-hicimos-amistades.txt"}, {"title": "Para ser campeón, hoy hay que ganar", "lyrics": "Hoy te vinimo a alentar\nPara ser campeón\nHoy hay que ganar\nDale dale dale Bo", "file": "para-ser-campeon-hoy-hay-que-ganar.txt"}, {"title": "Para todas las gallinas el regalo de papá", "lyrics": "Ya se acerca noche buena\nya se acerca navidad \npara todas las gallinas\nel regalo de papá", "file": "para-todas-las-gallinas-el-regalo-de-papa.txt"}, {"title": "Pasan los años jugadores y también campeonatos", "lyrics": "Señores yo soy de boca \ny lo sigo a todos lados \nno importa donde jueges t voy a alantar \npasan los años, jugadores y tambien campeonatos \nmi sentimiento nunca va a terminar \ny vamos boca no podemos perder \ny vamos boca que tenes q ganar \ndaria la vida por un campeonato \nuna vuelta mas", "file": "pasan-los-anos-jugadores-y-tambien-campeonatos.txt"}, {"title": "Podrán imitarnos pero jamas,pero jamás nos van a igualar", "lyrics": "Otra, otra vuelta Boca\nOtra, otra vuelta Boca\nSabes que siempre te vengo a ver, Xeneize\n Hay que poner mas huevo no podes perder, hay que ganar\n Esta es tu hinchada que te va a alentar\n En las buenas y en las malas hasta el final\n Podrán imitarnos pero jamás, pero jamás nos van a igualar", "file": "podran-imitarnos-pero-jamaspero-jamas-nos-van-a-igualar.txt"}, {"title": "Por que será", "lyrics": "Por que será que te sigo a todas partes, campeón\nPor que será que no se vivir \nCarnaval toda la vida y el xeneize la pasión \nSi no te veo, se me parte el corazón", "file": "por-que-sera.txt"}, {"title": "Porque te llevo en el corazón No me importa más nada", "lyrics": "Hoy tenemos que ganar\nla 12 vino re loca\nen todas partes Vamo a estar\nEsta es la barra de boca\nPorque te llevo en el corazón\nNo me importa más nada\nDonde estés va a alentar siempre va con vos esta descontrolada tu hinchada\nLa vuelta vamos a dar la 12 va a festejar\nQuiero verte salir primero\nNo la traten de igualar es la más loca que hay\nLa más grande del mundo entero\nRiBer no chamuyes más ya nos vamos a encontrar Vamo a Mtrls el tercero\nNunca nos vamos a olvidar que te fuiste al nacional y quemáste el gallinero", "file": "porque-te-llevo-en-el-corazon-no-me-importa-mas-nada.txt"}, {"title": "Que alegria que alegria, Ole, ole, ola!", "lyrics": "Que alegria que alegria,\nOle, ole, ola! \nVamos Boca todavia!, \nQue estas para ganar,\nCorriste en Mar del Plata, \nDe eso no te olvides,\nEl trapo de Di Carlo, \nNunca lo vas a ver, \nLa Boca es alegria, \nLa Boca es carnaval,\nVamos a correr a River hasta el Monumental...", "file": "que-alegria-que-alegria-ole-ole-ola.txt"}, {"title": "Que con esta Hinchada hay que salir primero", "lyrics": "Vamos Xeneixe pongan mas huevos \n Que con esta Hinchada hay que salir primero \n \n esas gallinas siempre corrieron \n Quemaron su cancha cuando descendieron \n \n vengan los borrachos a la bombonera \n vengan a la Boca a buscar las banderas \n Hacen amistades en Avellaneda \n tienen miedo de venir a la ribera\n \n dale dale dale dale dale Boca\n dale dale dale dale dale Boca\n dale dale dale dale dale Boca\n dale dale dale dale dale Boca", "file": "que-con-esta-hinchada-hay-que-salir-primero.txt"}, {"title": "Que paso con el Fantasma del descenso?", "lyrics": "Vamos Boca Juniors, sabés que yo te quiero \nSiempre voy con vos, es un sentimiento \nAca esta la 12 la que siempre te acompaña \nLa que esta en las buenas y en las malas \nQue paso con el fantasma del descenso \nQue paso con las gallinas y san lorenzo \nNadie quiere venir en la Bombonera \nPreguntale a los putos de Avellaneda", "file": "que-paso-con-el-fantasma-del-descenso.txt"}, {"title": "Queremos la copa", "lyrics": "dale dale bo!!!\nqueremos la copa\nla 12 esta loca y quiere un campeonato para festejar\nponga huevo xeneizes hoy no podemos perder", "file": "queremos-la-copa.txt"}, {"title": "Quiero quemar el gallinero", "lyrics": "Quiero quemar el gallinero,\nque se mueran los cuervos y la Guardia Imperial\n Vamos Xeneize con huevo valla al frente, te lo pide la gente no para de alentar\n Pasan los años, pasan los jugadores, La 12 está presente y no para de alentar\n Por eso yo te quiero dar, Boca mi corazón\n Yo te sigo a todas partes, gracias por salir campeón\n Vos vas a cobrar,\nRiver sos un cagón\n Esos no son los Borrachos,\nson los putos del Tablón", "file": "quiero-quemar-el-gallinero.txt"}, {"title": "Quiero ver a la 12 con todas sus banderas", "lyrics": "https://youtu.be/vVGHcVcHXZI\nQuiero ver a la 12\ncon todas sus banderas\nlas sombrillas los bombos\naunque AFA no quiera\nyo soy hincha de Boca\nyo no soy delincuente\nquiero ver a la 12\ncomo toda la gente.", "file": "quiero-ver-a-la-12-con-todas-sus-banderas.txt"}, {"title": "Racing Botón!", "lyrics": "Racing Botón! Racing Botón! Racing Botón! Racing Botón!\nCon el machete en la mano, la chapa en el corazón!\nSerás siempre vigilante! la academia racing club\nRacing Botón! Racing Botón! Racing Botón! Racing Botón!", "file": "racing-boton.txt"}, {"title": "Racing va a correr la yuta también", "lyrics": "Es una noche especial\nno se la valla a perder\nRacing va a correr\nla yuta tambien", "file": "racing-va-a-correr-la-yuta-tambien.txt"}, {"title": "River decime que se siente", "lyrics": "River decime que se siente,\nhaber jugado el Nacional\n Te juro que aunque pasen los años,\nnunca nos vamos a olvidar\n Que te fuiste a la B,\nquemaste el Monumental\n Esa mancha no se borra nunca mas\n Che gallina sos cagón, le pegaste a un jugador\n Que cobarde los Borrachos del Tablón", "file": "river-decime-que-se-siente.txt"}, {"title": "Señores soy de Boca y lo sigo a todos lados", "lyrics": "Señores soy de Boca y lo sigo a todos lados \ny no me importa donde juegues te voy a alentar \npasan los años jugadores y tambien campeonatos \nel sentimiento nunca va a terminar \nY vamos Boca no podemos perder \ny vamos Boca que tenes que ganar \ndaria la vida por un campeonato \nuna vuelta mas", "file": "senores-soy-de-boca-y-lo-sigo-a-todos-lados.txt"}, {"title": "Señores yo dejo todo me voy a ver a Boca", "lyrics": "Señores yo dejo todo...\nme voy a ver a boca\npor q sus jugadores\nme van a demostrar\nque salen a ganar\nquieren salir campeon\nq lo llevan adentro\ncomo lo llevo yo...", "file": "senores-yo-dejo-todo-me-voy-a-ver-a-boca.txt"}, {"title": "Sera siempre independiente un vigilante y boton!", "lyrics": "Con el machete en la mano ! \ny la chapa en el corazon ! \nsera siempre independiente un vigilante y boton! \nrojo boton rojo boton \nrojo boton rojo boton \nrojo boton rojo botoon \nrojo botoon rojo boton boton boton !", "file": "sera-siempre-independiente-un-vigilante-y-boton.txt"}, {"title": "Si quieren ver fiesta, vengan a La 12", "lyrics": "Si quieren ver fiesta, vengan a La 12\n Porque esta es la hinchada, mas loca que hay\n Con bombo y trompetas, todas sus banderas\n Todos lo Borrachos, se quieren matar\n Vamos los Xeneizes vamos a ganar\n Esta es tu hinchada que te va a alentar\n Vamos los Xeneizes no podes perder\n Porque a los Borrachos los vamo' a correr", "file": "si-quieren-ver-fiesta-vengan-a-la-12.txt"}, {"title": "Si te vas yo tambien me voy", "lyrics": "De chico te vengo a ver, y de vos me enamoré\nLa azul y oro es mi pasión, lo llevo en el corazón\nVamos los bosteros, vamos a ganar \nEs un sentimiento no puedo parar\nDale bo dale dale bo, dale bo dale dale bo, campeón \nLa vuelta vamos a dar, La 12 va festejar", "file": "si-te-vas-yo-tambien-me-voy.txt"}, {"title": "Siempre estaré a tu lado Boca Juniors querido", "lyrics": "Somos de la gloriosa banda de Boca Juniors\n La que llena la cancha la mas grande del mundo...\n A pesar de los gases y los palos recibidos\n Siempre estaré a tu lado Boca Juniors querido,\nBoca Juniors querido...", "file": "siempre-estare-a-tu-lado-boca-juniors-querido.txt"}, {"title": "Solo le pido a Dios, que el Xeneize no me sea indiferente", "lyrics": "Solo le pido a Dios,\nque el Xeneize no me sea indiferente;\nPonga huevo y vaya al frente,\nVamos Boca, no le falles a tu gente.", "file": "solo-le-pido-a-dios-que-el-xeneize-no-me-sea-indiferente.txt"}, {"title": "Solo le pido a Dios, que se mueran todos los chilenos", "lyrics": "Solo le pido a Dios\nque se mueran todos los chilenos\nSoy bostero y de Argentina\nno se olvida la traicion a las Malvinas", "file": "solo-le-pido-a-dios-que-se-mueran-todos-los-chilenos.txt"}, {"title": "Somos de la gloriosa numero doce", "lyrics": "Somos de la gloriosa numero doce \nla que lo sigue a Boca y no pide nada \naunque vayas perdiendo sigue alentando \nporque a pesar de todo te sigue amando \nNumero Doce", "file": "somos-de-la-gloriosa-numero-doce.txt"}, {"title": "Somos el pueblo Y el carnaval", "lyrics": "Vamos, vamos lo Xeneizes\nVamos Xeneizes\nVamos a ganar\nSomos la mitad mas uno\nSomos el pueblo\nY el carnaval", "file": "somos-el-pueblo-y-el-carnaval.txt"}, {"title": "Son los putos de riBer los que corren siempre con la 12", "lyrics": "Che Gallina, ya nos vamos a ver de nuevo\nvayan comprando el cajón para el tercero ...\nLos de River con Boca nunca se plantan\nNos tienen miedo\nLes faltan huevos\nPara el combate\nCon los Bosteros\nSon los putos de River\nlos que corren siempre con La 12\nlos que piden custodia\ncuando van a jugar a la Boca\ncorriste en Mar del Plata\npor favor me pediste en Mendoza\nGallina yo me pregunto\ncuando te vas a plantar en La Boca", "file": "son-los-putos-de-riber-los-que-corren-siempre-con-la-12.txt"}, {"title": "Soy bostero, es un sentimiento", "lyrics": "Ole ole ole \nole ole ole ola \nole ole ole \ncada dia te quiero mas \nsoy bostero \nes un sentimiento \nno puedo parar", "file": "soy-bostero-es-un-sentimiento.txt"}, {"title": "Soy de Boca desde que estaba en la cuna", "lyrics": "Soy de Boca desde que estaba en la cuna \na Boca Junior yo lo sigo a donde va \neste año de la mano de La 12 \ntodos juntos a la vuelta vamo a dar", "file": "soy-de-boca-desde-que-estaba-en-la-cuna.txt"}, {"title": "Soy del barrio de La Boca", "lyrics": "Soy del barrio de La Boca,\ny siempre te voy a seguir\n En las malas a todas partes,\nlas buenas ya van a venir\n No somos como la Academia,\nno somos como el Ciclón\n A Boca lo llevo en la sangre,\nlo llevo en el corazón", "file": "soy-del-barrio-de-la-boca.txt"}, {"title": "Todos de la cabeza nadie la puede parar", "lyrics": "Y vamos los Xenizes que la 12 te va alentar... \ntodos de la cabeza nadie la puede parar \nvamo a salir campeones y una gayina va morir.. \nDale Bo, siempre te voy a seguir...", "file": "todos-de-la-cabeza-nadie-la-puede-parar.txt"}, {"title": "Todos los momentos que viví", "lyrics": "Todos los momentos que viví\nTodas las canchas donde te seguí\nAprendí a llevarte en el alma\nBoca Juniors de mi vida\nVos me hiciste muy feliz\nLas gallinas siempre van\nPara la cancha con la Federal\nVamos a quemar el gallinero\nA matarles el tercero\nY la vuelta vamo' a dar\nBoca vos sos mi vida\nVos sos la pasión\nSolo te pido una cosa\nQue salgas otra vez campeón", "file": "todos-los-momentos-que-vivi.txt"}, {"title": "Va a ser un dia especial", "lyrics": "Va a ser un dia especial\nno se lo vaya a perder\nRiBer va a correr\nla yuta tambien", "file": "va-a-ser-un-dia-especial.txt"}, {"title": "Vamo a salir campeones y una gallina va morir", "lyrics": "Y vamos los Xenizes que la 12 te va alentar \ntodos de la cabeza nadie la puede parar \nvamo a salir campeones y una gallina va morir\nDale Bo, siempre te voy a seguir", "file": "vamo-a-salir-campeones-y-una-gallina-va-morir.txt"}, {"title": "Vamos a correr a river en el monumental", "lyrics": "Que alegria que alegria\nole ole ola\nvamos Boca todavia\nque estas para ganar\nCorriste en Mar del Plata\nde eso no te olvides\nel trapo de Di Carlo\nnunca lo vas a ver\nLa Boca es alegria\nLa Boca es carnaval\nvamos a correr a river\nen el monumental.", "file": "vamos-a-correr-a-river-en-el-monumental.txt"}, {"title": "Vamos Boca Juniors", "lyrics": "Esta es La Número 12\nque te sigue a todas partes\nla que corre a San Lorenzo\nla Academia y River Plate...\n\nesta hinchada siempre alienta\naunque ganes aunque pierdas\nel XENEIZE un sentimiento\nque no se puede evitar...\n\nvamos Boca Juniors que tenes que ganar\ny de la cabeza la vuelta vamo a dar\ny descontrolado vamos a festejar\nvamos a festejar...", "file": "vamos-boca-juniors.txt"}, {"title": "Vamos xeneizes que tenemos que ganar", "lyrics": "Vamos xeneizes que tenemos que ganar,\nesta hinchadaaaa\nno te deja de alentar", "file": "vamos-xeneizes-que-tenemos-que-ganar.txt"}, {"title": "Vamos Xeneizes", "lyrics": "Desde pendejo yo te vengo a ver\nY me persigue la policia\nNo se asta cuando me van a correr\nNo se dan cuenta que vos sos mi vida\nVamos xeneizes\nQue hay que poner mas huevos\nCon esta hinchada\nTenes que ser primero", "file": "vamos-xeneizes.txt"}, {"title": "Vayas donde vayas voy a ir", "lyrics": "Vayas donde vayas voy a ir \nvos sos la razon de mi existir \nte llevamos en el corazon \nboca yo te qiero ver campeon \nyo soy asi, bostero soy, de la cabeza siempre voy \nvos sos asi che river plate el que no para de correr", "file": "vayas-donde-vayas-voy-a-ir.txt"}, {"title": "Vieja querida, me tenes que perdonar", "lyrics": "Vieja Querida, Me tenes que perdonar\nEl domingo! Junto a Boca voy a estar!", "file": "vieja-querida-me-tenes-que-perdonar.txt"}, {"title": "Xeneize sos lo más grande qué hay", "lyrics": "Xeneize sos lo más grande qué hay \n Somos el pueblo y el carnaval\n Quiero la libertadores \n Pongan huevo jugadores\n La 12 va estar \n Te viene alentar \n Quiere festejar", "file": "xeneize-sos-lo-mas-grande-que-hay.txt"}, {"title": "Y vamos Boca, no podemos perder", "lyrics": "", "file": "y-vamos-boca-no-podemos-perder.txt"}, {"title": "Y vamos los xeneizes que La Doce te va a alentar", "lyrics": "Y vamos los xeneizes que La Doce te va a alentar,\nTodos de la cabeza nadie la puede parar!\nVamos a salir campeones y una gallina va a morir,\nDale Booo, siempre te voy a seguir", "file": "y-vamos-los-xeneizes-que-la-doce-te-va-a-alentar.txt"}, {"title": "Yo no soy como esos que se quedan en casa", "lyrics": "Yo no soy como esos que se quedan en casa\nescuchando la radio para ver lo que pasa\nyo soy hincha de Boca no me cabe ninguna\nsi me andan buscando estoy en la tribuna\nestoy en la tribuna", "file": "yo-no-soy-como-esos-que-se-quedan-en-casa.txt"}, {"title": "Yo paro en la doce la hinchada mas loca", "lyrics": "Yo paro en de la 12, la hinchada mas loca,\nque va a todas partes siguiendo a BOCA,\nque tenemos aguante ya no quedan dudas\nhacemos una fiesta en cada tribuna,\na mi no me importa que vayas primero,\nyo lo sigo a boca por que yo lo quiero,\nyo no soy amargo como las gallinas,\npor estos colores yo dejo la vida,\nBoca juniors yo te quiero,\nte pido que pongas huevos,\nesta pasion se lleva en el corazon", "file": "yo-paro-en-la-doce-la-hinchada-mas-loca.txt"}, {"title": "Yo quiero la camiseta", "lyrics": "Vamos Xeneize, te vinimos a ver\n Yo quiero la camiseta\n Esta es la 12 te sigue a donde vas\n Siempre de la cabeza\n Vamos Xeneize, hoy no podemos perder\n Ganes o pierdas no me importa una mierda\n Gallina p*ta te espera tu papá\n Para correrte de vuelta", "file": "yo-quiero-la-camiseta.txt"}, {"title": "Yo quiero un trapo que tenga estos colores", "lyrics": "Al gallinero ya se lo prendimos fuego \na san lorenzo lo corrimos en boedo \navellaneda lo defiende un policia \nhay que puta que son las hinchadas unidas \nquiero que sepan que el xeneize es mi alegria \naunque no entiendan que por boca doy la vida \ncuando me muera no quiero nada de flores \nyo quiero un trapo que tenga estos colores \ny dale dale dale dale dale bo \ny dale dale dale dale dale bo \ny dale dale dale dale dale bo \ny dale dale dale dale dale bo", "file": "yo-quiero-un-trapo-que-tenga-estos-colores.txt"}, {"title": "Yo sigo al xeneize por amor, Boca Juniors me robaste el corazón", "lyrics": "Yo sigo al xeneize por amor\nBoca Juniors me robaste el corazón \nMucha gente nunca va a entender\nA Boca se lo lleva dentro de la piel\nSos mi vida, sos mi enfermedad\nSos la droga que yo no puedo dejar\nPorque nunca te abandonaré\nCuando muera desde el cielo yo te alentaré...\nYo te alentaré...\nLlora riber porque descendió\nSufre porque es cagon\nMe pregunto qué sintió jugar\nJugar todo el año en el nacional\nEn el nacional...", "file": "yo-sigo-al-xeneize-por-amor-boca-juniors-me-robaste-el-corazon.txt"}]</script>
+<script>
+const songs = JSON.parse(document.getElementById('song-data').textContent);
+
+function norm(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function escapeHtml(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+const q = document.getElementById('q');
+const results = document.getElementById('results');
+const stats = document.getElementById('stats');
+const clearBtn = document.getElementById('clear');
+
+let debounceTimer = null;
+
+function search() {
+  const raw = q.value;
+  const query = norm(raw);
+  results.innerHTML = '';
+  if (!query) {
+    stats.textContent = songs.length + ' canciones cargadas. Escribí un fragmento para buscar.';
+    const hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = 'Probá con una frase, una palabra o un estribillo.';
+    results.appendChild(hint);
+    return;
+  }
+
+  const terms = query.split(' ').filter(Boolean);
+  const matches = [];
+  for (const song of songs) {
+    const nTitle = norm(song.title);
+    const nLyrics = norm(song.lyrics);
+    const inTitle = terms.every(t => nTitle.includes(t));
+    const inLyrics = terms.every(t => nLyrics.includes(t));
+    if (inTitle || inLyrics) {
+      const exactTitle = nTitle.includes(query);
+      const exactLyrics = nLyrics.includes(query);
+      const idx = nLyrics.indexOf(terms[0]);
+      matches.push({ song, idx: idx < 0 ? 999999 : idx, inTitle, exactTitle, exactLyrics });
+    }
+  }
+
+  matches.sort((a, b) => {
+    const aExact = a.exactTitle || a.exactLyrics;
+    const bExact = b.exactTitle || b.exactLyrics;
+    if (aExact !== bExact) return aExact ? -1 : 1;
+    if (a.inTitle !== b.inTitle) return a.inTitle ? -1 : 1;
+    return a.idx - b.idx;
+  });
+
+  const shown = matches.slice(0, 40);
+  stats.textContent = matches.length === 0
+    ? 'Sin resultados.'
+    : (matches.length + ' coincidencia' + (matches.length === 1 ? '' : 's') +
+       (matches.length > shown.length ? ' (mostrando ' + shown.length + ')' : '') + '.');
+
+  if (matches.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'No se encontró ninguna canción con ese fragmento. Probá con menos palabras.';
+    results.appendChild(empty);
+    return;
+  }
+
+  let resultIndex = 0;
+  for (const m of shown) {
+    const song = m.song;
+    const nLyrics = norm(song.lyrics);
+    const lines = song.lyrics.split('\n');
+    const qn = query;
+    // count matching lines
+    let matchLines = 0;
+    const renderedLines = lines.map(line => {
+      const isMatch = norm(line).includes(qn) || terms.every(t => norm(line).includes(t));
+      if (isMatch) matchLines++;
+      const cls = isMatch ? 'line match' : 'line';
+      return '<span class="' + cls + '">' + escapeHtml(line) + '</span>';
+    }).join('\n');
+
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML =
+      '<details' + (resultIndex === 0 ? ' open' : '') + '>' +
+        '<summary class="card-head">' +
+          '<div>' +
+            '<div class="card-title">' + escapeHtml(song.title) + '</div>' +
+            '<div class="card-meta">' + escapeHtml(song.file) + '</div>' +
+          '</div>' +
+          '<span class="badge">' + matchLines + ' linea' + (matchLines === 1 ? '' : 's') + '</span>' +
+        '</summary>' +
+        '<div class="lyrics">' + renderedLines + '</div>' +
+      '</details>';
+    results.appendChild(card);
+    resultIndex++;
+  }
+}
+
+q.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(search, 120);
+});
+clearBtn.addEventListener('click', () => {
+  q.value = '';
+  q.focus();
+  search();
+});
+
+search();
+</script>
+</body>
+</html>
